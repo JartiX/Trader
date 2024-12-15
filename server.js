@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 let savedResults = [];
 let ipRequestTimes = {};
-const requestInterval = 60 * 1000;
+const requestInterval = 20 * 1000;
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -27,13 +27,24 @@ app.post('/save-results', (req, res) => {
 
     ipRequestTimes[ip] = currentTime;
 
-
     const { name, finalCapital, invested, profitOrLoss, mistakes } = req.body;
 
     console.log('Received data:', req.body);
 
-    savedResults.push({ name, finalCapital, invested, profitOrLoss, mistakes });
-    
+    if (!savedResults[name]) {
+        savedResults[name] = [];
+    }
+
+    if (savedResults[name].some(entry => entry.ip === ip)) {
+        return res.status(400).json({ message: "Результаты с этого IP уже были сохранены для данного имени." });
+    }
+    savedResults[name].push({
+        ip,
+        finalCapital,
+        invested,
+        profitOrLoss,
+        mistakes
+    });    
     res.json({
         message: "Результаты сохранены успешно!",
         data: { name, finalCapital, invested, profitOrLoss, mistakes }
@@ -41,18 +52,24 @@ app.post('/save-results', (req, res) => {
 });
 
 app.get('/get-results', (req, res) => {
-    res.json(savedResults);
+    const allResults = Object.keys(savedResults).map(name => ({
+        name,
+        results: savedResults[name].map(({ ip, ...result }) => result)
+    }));
+    res.json(allResults);
 });
 
 app.get('/analyze-results', (req, res) => {
-    if (savedResults.length === 0) {
+    const allResults = Object.values(savedResults).flat();
+
+    if (allResults.length === 0) {
         return res.json({ message: "Нет сохранённых данных для анализа." });
     }
 
     let totalProfitOrLoss = 0;
     let highestEarningPerson = null;
 
-    savedResults.forEach(result => {
+    allResults.forEach(result => {
         totalProfitOrLoss += result.profitOrLoss;
 
         if (highestEarningPerson === null || result.profitOrLoss > highestEarningPerson.profitOrLoss) {
@@ -64,7 +81,7 @@ app.get('/analyze-results', (req, res) => {
 
     res.json({
         averageProfitOrLoss,
-        totalResults: savedResults.length,
+        totalResults: allResults.length,
         highestEarningPerson: highestEarningPerson ? {
             name: highestEarningPerson.name,
             profitOrLoss: highestEarningPerson.profitOrLoss
