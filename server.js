@@ -77,7 +77,7 @@ app.get('/analyze-results', (req, res) => {
     const allResults = Object.entries(savedResults).flatMap(([name, results]) => 
         results.map(result => ({ ...result, name }))
     );
-    
+
     if (allResults.length === 0) {
         return res.json({ message: "Нет сохранённых данных для анализа." });
     }
@@ -94,7 +94,6 @@ app.get('/analyze-results', (req, res) => {
     });
 
     const averageProfitOrLoss = totalProfitOrLoss / allResults.length;
-    console.log(highestEarningPerson)
     res.json({
         averageProfitOrLoss,
         totalResults: allResults.length,
