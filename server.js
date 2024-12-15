@@ -37,7 +37,6 @@ app.post('/save-results', (req, res) => {
     }
     const existingRecordIndex = savedResults[name].findIndex(entry => entry.ip === ip);
     if (existingRecordIndex !== -1) {
-        console.log("Finded ip", savedResults[name][existingRecordIndex].ip);
         savedResults[name][existingRecordIndex] = {
             ip,
             finalCapital,
@@ -51,21 +50,7 @@ app.post('/save-results', (req, res) => {
             data: { name, finalCapital, invested, profitOrLoss, mistakes }
         });
     } else {
-        let oldName = null;
-
-        Object.keys(savedResults).forEach(savedName => {
-            const recordIndex = savedResults[savedName].findIndex(entry => entry.ip === ip);
-            if (recordIndex !== -1) {
-                oldName = savedName;
-            }
-        });
-        const finalName = oldName || name;
-
-        if (!savedResults[finalName]) {
-            savedResults[finalName] = [];
-        }
-
-        savedResults[finalName].push({
+        savedResults[name].push({
             ip,
             finalCapital,
             invested,
@@ -83,14 +68,16 @@ app.post('/save-results', (req, res) => {
 app.get('/get-results', (req, res) => {
     const allResults = Object.keys(savedResults).map(name => ({
         name,
-        results: savedResults[name].map(({ ip, ...result }) => result)
+        results: savedResults[name]
     }));
     res.json(allResults);
 });
 
 app.get('/analyze-results', (req, res) => {
-    const allResults = Object.values(savedResults).flat();
-
+    const allResults = Object.entries(savedResults).flatMap(([name, results]) => 
+        results.map(result => ({ ...result, name }))
+    );
+    
     if (allResults.length === 0) {
         return res.json({ message: "Нет сохранённых данных для анализа." });
     }
@@ -107,7 +94,7 @@ app.get('/analyze-results', (req, res) => {
     });
 
     const averageProfitOrLoss = totalProfitOrLoss / allResults.length;
-    console.log(highestEarningPerson);
+    console.log(highestEarningPerson)
     res.json({
         averageProfitOrLoss,
         totalResults: allResults.length,
