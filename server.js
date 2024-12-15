@@ -21,6 +21,7 @@ app.post('/save-results', (req, res) => {
     const ip = req.ip;
     const currentTime = Date.now();
 
+    console.log('User ip: ', ip);
     if (ipRequestTimes[ip] && currentTime - ipRequestTimes[ip] < requestInterval) {
         return res.status(429).json({ message: "Слишком частые запросы с вашего IP. Пожалуйста, подождите минуту." });
     }
@@ -35,8 +36,8 @@ app.post('/save-results', (req, res) => {
         savedResults[name] = [];
     }
     const existingRecordIndex = savedResults[name].findIndex(entry => entry.ip === ip);
-
-   if (existingRecordIndex !== -1) {
+    if (existingRecordIndex !== -1) {
+        console.log("Finded ip", savedResults[name][existingRecordIndex].ip);
         savedResults[name][existingRecordIndex] = {
             ip,
             finalCapital,
