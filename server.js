@@ -34,21 +34,35 @@ app.post('/save-results', (req, res) => {
     if (!savedResults[name]) {
         savedResults[name] = [];
     }
+    const existingRecordIndex = savedResults[name].findIndex(entry => entry.ip === ip);
 
-    if (savedResults[name].some(entry => entry.ip === ip)) {
-        return res.status(400).json({ message: "Результаты с этого IP уже были сохранены для данного имени." });
+   if (existingRecordIndex !== -1) {
+        savedResults[name][existingRecordIndex] = {
+            ip,
+            finalCapital,
+            invested,
+            profitOrLoss,
+            mistakes
+        };
+
+        return res.json({
+            message: "Результаты обновлены успешно!",
+            data: { name, finalCapital, invested, profitOrLoss, mistakes }
+        });
+    } else {
+        savedResults[name].push({
+            ip,
+            finalCapital,
+            invested,
+            profitOrLoss,
+            mistakes
+        });
+
+        return res.json({
+            message: "Результаты сохранены успешно!",
+            data: { name, finalCapital, invested, profitOrLoss, mistakes }
+        });
     }
-    savedResults[name].push({
-        ip,
-        finalCapital,
-        invested,
-        profitOrLoss,
-        mistakes
-    });    
-    res.json({
-        message: "Результаты сохранены успешно!",
-        data: { name, finalCapital, invested, profitOrLoss, mistakes }
-    });
 });
 
 app.get('/get-results', (req, res) => {
