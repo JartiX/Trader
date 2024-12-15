@@ -103,7 +103,7 @@ function sendResultsToServer(name, finalCapital, invested, profitOrLoss, mistake
         name, finalCapital, invested, profitOrLoss, mistakes
     };
 
-    fetch('http://localhost:3000/save-results', {
+    fetch('https://trader-3fku.onrender.com/save-results', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
