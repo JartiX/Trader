@@ -51,7 +51,21 @@ app.post('/save-results', (req, res) => {
             data: { name, finalCapital, invested, profitOrLoss, mistakes }
         });
     } else {
-        savedResults[name].push({
+        let oldName = null;
+
+        Object.keys(savedResults).forEach(savedName => {
+            const recordIndex = savedResults[savedName].findIndex(entry => entry.ip === ip);
+            if (recordIndex !== -1) {
+                oldName = savedName;
+            }
+        });
+        const finalName = oldName || name;
+
+        if (!savedResults[finalName]) {
+            savedResults[finalName] = [];
+        }
+
+        savedResults[finalName].push({
             ip,
             finalCapital,
             invested,
@@ -92,8 +106,8 @@ app.get('/analyze-results', (req, res) => {
         }
     });
 
-    const averageProfitOrLoss = totalProfitOrLoss / savedResults.length;
-
+    const averageProfitOrLoss = totalProfitOrLoss / allResults.length;
+    console.log(highestEarningPerson);
     res.json({
         averageProfitOrLoss,
         totalResults: allResults.length,
