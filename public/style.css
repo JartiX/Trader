@@ -20,6 +20,29 @@ h1, h2 {
     color: rgb(0, 0, 0);
 }
 
+.labels {
+    font-weight: bold;
+    font-size: 1.2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 0px;
+    gap: 0px;
+}
+
+.label-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.label-item p {
+    margin: 0;
+}
+
 .main-menu, .controls {
     display: flex;
     flex-direction: column;
@@ -105,12 +128,28 @@ h1, h2 {
 }
 
 main {
+    display: flex;
+    flex-direction: column;
     background-color: #9ccdff;
     max-width: fit-content;
     justify-self: center;
     padding: 20px 20px 20px 20px;
     box-shadow: 3px 3px 16px 3px #909091;
     border-radius: 5px;
+}
+
+.summary {
+    opacity: 0;
+    padding: 20px;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 table {
@@ -199,5 +238,9 @@ tr:nth-child(even) {
 
     th, td {
         padding: 6px;
+    }
+
+    .labels {
+        font-size: 0.8em;
     }
 }

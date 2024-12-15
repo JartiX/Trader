@@ -9,6 +9,8 @@ const stockData = {
     C: { probability: 30, growth: 40, loss: -10 }
 };
 
+let rounds = document.querySelector('.rounds');
+let investments = document.querySelector('.investments');
 function startGame() {
     playerName = document.getElementById('playerName').value.trim();
 
@@ -32,6 +34,10 @@ function playRound() {
     const stock = document.getElementById('stock').value;
     const investment = parseFloat(document.getElementById('investment').value);
 
+    if (isNaN(investment)) {
+        alert('Неверно введена сумма инвестиций!');
+        return;
+    }
     if (investment > capital) {
         alert('У вас недостаточно средств для такой инвестиции!');
         return;
@@ -62,6 +68,9 @@ function playRound() {
         <td>${capital.toFixed(2)}</td>
     `;
     resultsTable.appendChild(newRow);
+
+    rounds.innerHTML = maxRounds - round;
+    investments.innerHTML = `${1000-totalInvested}$`
 
     round++;
 
@@ -95,6 +104,7 @@ function summarizeGame() {
         ${advice}
     `;
     document.getElementById('summary').innerHTML = summaryText;
+    document.getElementById('summary').style.opacity = '1';
     sendResultsToServer(playerName, capital, totalInvested, profitOrLoss, badDecisions);
 }
 
@@ -127,4 +137,7 @@ function restartGame() {
     document.getElementById('results').innerHTML = '';
     document.querySelectorAll('.button')[0].disabled = false;
     document.getElementById('summary').innerText = '';
+    document.getElementById('summary').style.opacity = '0';
+    rounds.innerHTML = maxRounds;
+    investments.innerHTML = `${1000}$`
 }
