@@ -83,10 +83,12 @@ app.get('/analyze-results', (req, res) => {
     }
 
     let totalProfitOrLoss = 0;
+    let totalMistakes = 0;
     let highestEarningPerson = null;
 
     allResults.forEach(result => {
         totalProfitOrLoss += result.profitOrLoss;
+        totalMistakes += result.mistakes;
 
         if (highestEarningPerson === null || result.profitOrLoss > highestEarningPerson.profitOrLoss) {
             highestEarningPerson = result;
@@ -94,7 +96,9 @@ app.get('/analyze-results', (req, res) => {
     });
 
     const averageProfitOrLoss = totalProfitOrLoss / allResults.length;
+    const averageMistakes = totalMistakes / allResults.length;
     res.json({
+        averageMistakes,
         averageProfitOrLoss,
         totalResults: allResults.length,
         highestEarningPerson: highestEarningPerson ? {
