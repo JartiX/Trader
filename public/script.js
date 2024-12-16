@@ -67,6 +67,7 @@ function playRound() {
         <td>${change}%</td>
         <td>${capital.toFixed(2)}</td>
     `;
+    newRow.classList.add(`${isGrowth ? 'up' : 'down'}`)
     resultsTable.appendChild(newRow);
 
     rounds.innerHTML = maxRounds - round;

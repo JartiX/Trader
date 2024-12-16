@@ -14,6 +14,14 @@ body {
     margin-bottom: 20px;
 }
 
+.down {
+    background-color: rgb(189, 5, 5);
+}
+
+.up {
+    background-color: rgb(0, 193, 0);
+}
+
 h1, h2 {
     margin: 25px 0 10px;
     justify-self: center;
@@ -172,9 +180,6 @@ th {
     background-color: #f4f4f4;
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
 
 .hidden {
     display: none;
